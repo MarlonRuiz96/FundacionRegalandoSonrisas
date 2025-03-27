@@ -1,0 +1,26 @@
+<div class="min-h-screen flex flex-col items-center justify-center bg-white p-6">
+    <!-- Logo de la fundación -->
+    <div class="mb-10 text-center">
+      <img src="logo.png" alt="Logo Fundación" class="h-60 mx-auto mb-4">
+      <h1 class="text-4xl font-bold text-primary">Fundación Solidaria Regalando Sonrisas</h1>
+      <p class="text-lg mt-2">Tu ayuda transforma vidas</p>
+    </div>
+  
+    <!-- Contenedor principal del botón -->
+    <div class="relative w-full max-w-md">
+      <!-- Botón principal -->
+      <button 
+        (click)="openModal()"
+        class="btn btn-primary btn-lg w-full animate-pulse hover:animate-none"
+      >
+        <span class="text-2xl font-bold">DONA AHORA</span>
+      </button>
+  
+     
+  
+      <!-- Mensaje de agradecimiento (opcional) -->
+      <div class="text-center mt-8 text-sm text-gray-500">
+        <p>100% de tu donación va directamente a nuestra causa</p>
+      </div>
+    </div>
+  </div>
