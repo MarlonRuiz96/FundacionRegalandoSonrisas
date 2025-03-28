@@ -2,12 +2,18 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+
+// Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+
+// Servicios
+import { PagosService } from '../../services/pagos.service';
+import { QpayproService } from '../../services/qpaypro.service';
 
 @Component({
   selector: 'app-formulario',
@@ -27,8 +33,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 })
 export class FormularioComponent {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private pagosService: PagosService, private qpayproService: QpayproService) {}
 
+  mensaje = 'Formulario de donación';
   
   paymentData: any = {
     x_login: 'visanetgt_qpay',
@@ -41,19 +48,19 @@ export class FormularioComponent {
     x_invoice_num: 123456,
     x_currency_code: '',
     x_amount: 1.00,
-    x_line_item: 'Donacion Regalando sonrisas',
+    x_line_item: "Donacion",
     x_freight: 0.00,
     x_email: '',
     cc_number: '',
     cc_exp: '',
     cc_cvv2: '',
     cc_name: '',
-    cc_type: '',
+    cc_type: 'visa',
     x_first_name: '',
     x_last_name: '',
     x_company: 'Company',
     x_address: '',
-    x_city: 'Guatemala',
+    x_city: '',
     x_state: 'Guatemala',
     x_country: 'Guatemala',
     x_zip: '01056',
@@ -71,18 +78,51 @@ export class FormularioComponent {
     finger: ''
   };
 
-  submitPayment() {
-    const endpoint = 'https://api-sandboxpayments.qpaypro.com/checkout/api_v1';
 
-    this.http.post(endpoint, this.paymentData).subscribe({
-      next: (response) => {
-        console.log('✅ Transacción exitosa:', response);
-        alert('Pago simulado exitosamente (sandbox). Revisa consola para detalles.');
+
+  submitPayment() {
+    // Aseguramos que el campo x_line_item esté bien formado
+    this.paymentData.x_line_item = `Donación<|>DON001<|>Donación benéfica<|>1<|>${this.paymentData.x_amount}<|>N`;
+  
+    this.qpayproService.procesarPago(this.paymentData).subscribe({
+      next: (respuestaQPayPro) => {
+        console.log('✅ Pago exitoso en QPayPro:', respuestaQPayPro, respuestaQPayPro.idTransaction);
+        alert('¡Pago procesado exitosamente con QPayPro!');
+        
+  
+        // ✅ Creamos aquí donacionData con los datos ya ingresados
+        const donacionData = {
+          nombre_completo: `${this.paymentData.x_first_name} ${this.paymentData.x_last_name}`,
+          email: this.paymentData.x_email,
+          monto: this.paymentData.x_amount,
+          moneda: this.paymentData.x_currency_code,
+          mensaje: 'Donación procesada',
+          estado_pago: 'exitoso',
+          factura: this.paymentData.x_invoice_num.toString(),
+          referencia_transaccion: respuestaQPayPro.idTransaction || 'N/A',
+          metodo: 'tarjeta',
+          departamento: this.paymentData.x_city,
+        };
+  
+        // Enviamos a tu backend
+        this.pagosService.procesarPago(donacionData).subscribe({
+          next: (respuesta) => {
+            console.log('✅ Donación guardada:', respuesta);
+            alert('¡Donación guardada exitosamente!');
+          },
+          error: (error) => {
+            console.error('❌ Error al guardar donación:', error);
+            alert('Ocurrió un error al guardar la donación.');
+          }
+        });
+  
       },
-      error: (error) => {
-        console.error('❌ Error al procesar el pago:', error);
-        alert('Ocurrió un error al simular el pago.');
+      error: (errorQPayPro) => {
+        console.error('❌ Error en QPayPro:', errorQPayPro);
+        alert('Ocurrió un error al procesar el pago con QPayPro.');
       }
     });
   }
+  
+  
 }
