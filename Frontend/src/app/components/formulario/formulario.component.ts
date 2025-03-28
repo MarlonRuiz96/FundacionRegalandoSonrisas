@@ -10,10 +10,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialogRef } from '@angular/material/dialog';
 
 // Servicios
 import { PagosService } from '../../services/pagos.service';
 import { QpayproService } from '../../services/qpaypro.service';
+
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-formulario',
@@ -33,10 +36,17 @@ import { QpayproService } from '../../services/qpaypro.service';
 })
 export class FormularioComponent {
 
-  constructor(private http: HttpClient, private pagosService: PagosService, private qpayproService: QpayproService) {}
+  datosllenos: boolean = false;
+
+  constructor(
+    private http: HttpClient,
+    private pagosService: PagosService,
+    private qpayproService: QpayproService,
+    private dialogRef: MatDialogRef<FormularioComponent>
+  ) {}
 
   mensaje = 'Formulario de donación';
-  
+
   paymentData: any = {
     x_login: 'visanetgt_qpay',
     x_private_key: '88888888888',
@@ -78,19 +88,47 @@ export class FormularioComponent {
     finger: ''
   };
 
-
+  verificarDatosCompletos(): boolean {
+    const d = this.paymentData;
+    return (
+      d.x_first_name.trim() !== '' &&
+      d.x_last_name.trim() !== '' &&
+      d.x_email.includes('@') &&
+      d.x_amount > 0 &&
+      d.x_currency_code !== '' &&
+      d.cc_number.trim() !== '' &&
+      d.cc_exp.trim() !== '' &&
+      d.cc_cvv2.trim() !== '' &&
+      d.cc_name.trim() !== '' &&
+      d.x_address.trim() !== '' &&
+      d.x_city.trim() !== ''
+    );
+  }
 
   submitPayment() {
-    // Aseguramos que el campo x_line_item esté bien formado
+    this.datosllenos = this.verificarDatosCompletos();
+
+    if (!this.datosllenos) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Por favor completa todos los campos obligatorios correctamente.',
+        confirmButtonText: 'Aceptar'
+      });
+      return;
+    }
+
     this.paymentData.x_line_item = `Donación<|>DON001<|>Donación benéfica<|>1<|>${this.paymentData.x_amount}<|>N`;
-  
+
     this.qpayproService.procesarPago(this.paymentData).subscribe({
       next: (respuestaQPayPro) => {
-        console.log('✅ Pago exitoso en QPayPro:', respuestaQPayPro, respuestaQPayPro.idTransaction);
-        alert('¡Pago procesado exitosamente con QPayPro!');
-        
-  
-        // ✅ Creamos aquí donacionData con los datos ya ingresados
+        Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'Pago procesado exitosamente con QPayPro.',
+          confirmButtonText: 'Aceptar'
+        });
+
         const donacionData = {
           nombre_completo: `${this.paymentData.x_first_name} ${this.paymentData.x_last_name}`,
           email: this.paymentData.x_email,
@@ -103,26 +141,36 @@ export class FormularioComponent {
           metodo: 'tarjeta',
           departamento: this.paymentData.x_city,
         };
-  
-        // Enviamos a tu backend
+
         this.pagosService.procesarPago(donacionData).subscribe({
-          next: (respuesta) => {
-            console.log('✅ Donación guardada:', respuesta);
-            alert('¡Donación guardada exitosamente!');
+          next: () => {
+            Swal.fire({
+              icon: 'success',
+              title: '¡Éxito!',
+              text: 'Donación guardada exitosamente.',
+              confirmButtonText: 'Aceptar'
+            });
+            this.dialogRef.close({ success: true, mensaje: 'Donación completada' });
           },
-          error: (error) => {
-            console.error('❌ Error al guardar donación:', error);
-            alert('Ocurrió un error al guardar la donación.');
+          error: () => {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Ocurrió un error al guardar la donación.',
+              confirmButtonText: 'Aceptar'
+            });
           }
         });
-  
+
       },
-      error: (errorQPayPro) => {
-        console.error('❌ Error en QPayPro:', errorQPayPro);
-        alert('Ocurrió un error al procesar el pago con QPayPro.');
+      error: () => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Ocurrió un error al procesar el pago con QPayPro, por favor verifica los datos de su tarjeta e intente nuevamente.',
+          confirmButtonText: 'Aceptar'
+        });
       }
     });
   }
-  
-  
 }
