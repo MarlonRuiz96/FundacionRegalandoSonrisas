@@ -49,6 +49,48 @@ class PagosController extends Controller
             return response()->json(['error' => 'Donación no encontrada'], 404);
         }
     }
+
+    public function totaldonadoenQ()
+    {
+        $total = Pago::where('moneda', 'GTQ')->sum('monto');
+        return response()->json([$total]);
+
+    }
+
+    public function totaldonadoenUSD()
+    {
+        $total = Pago::where('moneda', 'USD')->sum('monto');
+        return response()->json([$total]);
+
+    }
+
+    Public function donacionesvalidas()
+    {
+        $donaciones = Pago::where('estado_pago', 'exitoso')->count();
+        return response()->json($donaciones);
+    }
+
+    public function donacionespendientes()
+    {
+        $donaciones = Pago::where('estado_pago', 'pendiente')->count();
+        return response()->json($donaciones);
+    }
+    public function donacionesfallidas()
+    {
+        $donaciones = Pago::where('estado_pago', 'fallido')->count();
+        return response()->json($donaciones);
+    }
+
+    public function donacionespordepartamento()
+    {
+        $donaciones = Pago::select('departamento', \DB::raw('count(*) as total'))
+            ->groupBy('departamento')
+            ->orderBy('total', 'desc')
+            ->get();
+        return response()->json($donaciones);
+    }
+
+
     
 
 

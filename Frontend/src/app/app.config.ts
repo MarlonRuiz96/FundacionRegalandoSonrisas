@@ -6,6 +6,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +19,8 @@ export const appConfig: ApplicationConfig = {
       MatButtonModule, // Para botones estilizados
       MatFormFieldModule, // Para campos de formulario
       MatInputModule // Para inputs
-    )
+    ),
+    provideCharts(withDefaultRegisterables())
+
   ]
 };

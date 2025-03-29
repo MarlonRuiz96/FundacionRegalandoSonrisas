@@ -7,7 +7,9 @@ import { Observable } from 'rxjs';
 })
 export class PagosService {
 
-  private apiUrl = 'https://pruebasgestordetalentos.com/api';
+  // private apiUrl = 'https://pruebasgestordetalentos.com/api';
+  private apiUrl = 'http://localhost:8000/api';
+  
 
   constructor(private http: HttpClient) {}
 
@@ -30,4 +32,28 @@ export class PagosService {
   eliminarPago(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/pagos/${id}`);
   }
+
+  getPagosUSD(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pagos/moneda/usd`);
+  }
+
+  getPagosGTQ(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pagos/moneda/gtq`);
+  }
+
+  getTotalPagosValidos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pagos/validos`);
+  }
+
+  getTotalPagosPendientes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pagos/pendientes`);
+  }
+
+  getTotalPagosFallidos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pagos/fallidas`);
+  }
+
+getpagostodosdepartamentos(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/pagos/departamento`);
+}
 }

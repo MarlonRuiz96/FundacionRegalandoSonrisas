@@ -1,1 +1,113 @@
-<p>dashboard works!</p>
+<!-- dashboard.component.html -->
+<div class="dashboard-container">
+    <h1 class="text-3xl font-bold mb-6">Dashboard de Donaciones</h1>
+  
+    <!-- Filtros -->
+    <div class="filters flex gap-4 mb-8">
+      <input
+        type="text"
+        class="input input-bordered flex-1"
+        placeholder="Buscar por nombre..."
+        [(ngModel)]="searchText"
+      >
+  
+      <select class="select select-bordered" [(ngModel)]="selectedStatus">
+        <option value="todos">Todos los estados</option>
+        <option value="exitoso">Exitoso</option>
+        <option value="pendiente">Pendiente</option>
+        <option value="fallido">Fallido</option>
+      </select>
+  
+      <select class="select select-bordered" [(ngModel)]="selectedDepartment">
+        <option value="todos">Todos los departamentos</option>
+        <option *ngFor="let depto of departamentos" [value]="depto">{{ depto }}</option>
+      </select>
+      
+    </div>
+  
+    <!-- Estadísticas -->
+    <div class="stats-grid grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+      <div class="stat-card bg-base-100 p-6 rounded-lg shadow">
+        <h3 class="text-sm text-gray-500 mb-2">Total Donado</h3>
+        <p class="text-2xl font-bold">{{ totalDonadoGTQ | currency:'GTQ':'symbol':'1.2-2' }}</p>
+      </div>
+      <div class="stat-card bg-base-100 p-6 rounded-lg shadow">
+        <h3 class="text-sm text-gray-500 mb-2">Total Donado</h3>
+        <p class="text-2xl font-bold">{{ totalDonadoUSD | currency:'USD':'symbol':'1.2-2' }}</p>
+      </div>
+  
+      <div class="stat-card bg-base-100 p-6 rounded-lg shadow border-l-4 border-success">
+        <h3 class="text-sm text-gray-500 mb-2">Exitosas</h3>
+        <p class="text-2xl font-bold text-success">{{ totalExitosas}}</p>
+      </div>
+  
+      <div class="stat-card bg-base-100 p-6 rounded-lg shadow border-l-4 border-warning">
+        <h3 class="text-sm text-gray-500 mb-2">Pendientes</h3>
+        <p class="text-2xl font-bold text-warning">{{ totalPendientes }}</p>
+      </div>
+  
+      <div class="stat-card bg-base-100 p-6 rounded-lg shadow border-l-4 border-error">
+        <h3 class="text-sm text-gray-500 mb-2">Fallidas</h3>
+        <p class="text-2xl font-bold text-error">{{ totalfallidas }}</p>
+      </div>
+    </div>
+  
+    <!-- Gráficos -->
+    <div class="charts-grid grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="chart-card bg-base-100 p-6 rounded-lg shadow">
+        <h3 class="text-lg font-bold mb-4">Donaciones por Departamento</h3>
+        <div class="h-64">
+          <canvas baseChart
+            [type]="'bar'"
+            [data]="barChartData"
+            [options]="barChartOptions">
+          </canvas>
+        </div>
+      </div>
+  
+      <div class="chart-card bg-base-100 p-6 rounded-lg shadow">
+        <h3 class="text-lg font-bold mb-4">Estado de Pagos</h3>
+        <div class="h-64">
+          <canvas baseChart
+            [type]="'pie'"
+            [data]="pieChartData"
+            [options]="pieChartOptions">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Tabla -->
+    <div class="overflow-x-auto bg-base-100 rounded-lg shadow">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th>Fecha</th>
+            <th>Departamento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let donation of filteredDonations">
+            <td>{{ donation.nombre_completo }}</td>
+            <td>{{ donation.email }}</td>
+            <td>{{ donation.monto | currency:donation.moneda:'symbol':'1.2-2' }}</td>
+            <td>
+              <span [ngClass]="{
+                'text-success': donation.estado_pago === 'exitoso',
+                'text-warning': donation.estado_pago === 'pendiente',
+                'text-error': donation.estado_pago === 'fallido'
+              }">
+                {{ donation.estado_pago | titlecase }}
+              </span>
+            </td>
+            <td>{{ donation.created_at | date:'shortDate' }}</td>
+            <td>{{ donation.departamento }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
