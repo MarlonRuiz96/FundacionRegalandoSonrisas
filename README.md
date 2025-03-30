@@ -135,3 +135,40 @@ php artisan serve
 cd ../Frontend
 npm install
 ng serve
+
+
+## 🧪 Prueba la Demo
+
+Puedes probar el sistema completo de principio a fin con los siguientes pasos:
+
+### 🌐 Sitio de prueba
+
+👉 [https://qpaypro.marlonruiz.dev](https://qpaypro.marlonruiz.dev)
+
+Haz clic en el botón **DONA AHORA**, completa el formulario y revisa tu correo electrónico.
+
+---
+
+### 💳 Datos para pruebas (QPayPro)
+
+En el paso de **pago con tarjeta**, utiliza los siguientes datos de prueba:
+
+| Campo                 | Valor                |
+|-----------------------|----------------------|
+| **Número de tarjeta** | `4111 1111 1111 1111` |
+| **Fecha de vencimiento** | `11 / 27`             |
+| **CVV**               | `123`                |
+| **Teléfono**          | `+50250417389`       |
+
+✅ Al completar el proceso, el sistema:
+
+- Guarda la donación en estado **pendiente**
+- Envía un **correo con un enlace de pago**
+- Redirecciona a la **Checkout Page de QPayPro**
+- Procesa el pago y actualiza el estado a **exitoso**
+- Envía un **correo de confirmación** con los detalles de la transacción
+
+---
+
+> 💡 Este flujo permite simular una donación real de extremo a extremo utilizando datos de prueba, sin hacer cargos reales.
+
