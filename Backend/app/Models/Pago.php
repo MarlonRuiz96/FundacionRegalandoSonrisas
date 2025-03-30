@@ -15,6 +15,7 @@ class Pago extends Model
         'nombre_completo',
         'email',
         'telefono',
+        'direccion',
         'monto',
         'moneda',
         'mensaje',
@@ -23,5 +24,7 @@ class Pago extends Model
         'referencia_transaccion',
         'metodo',
         'departamento',
+        'token',
+        'referencia'
     ];
 }

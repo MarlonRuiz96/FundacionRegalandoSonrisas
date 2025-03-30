@@ -45,47 +45,48 @@ export class FormularioComponent {
     private dialogRef: MatDialogRef<FormularioComponent>
   ) {}
 
-  mensaje = 'Formulario de donación';
+  //variables
+  x_mensaje: string = '';
 
   paymentData: any = {
     x_login: 'visanetgt_qpay',
-    x_private_key: '88888888888',
-    x_api_secret: '99999999999',
-    x_product_id: 6,
-    x_audit_number: 123456,
-    x_fp_sequence: Date.now(),
-    x_fp_timestamp: Math.floor(Date.now() / 1000),
-    x_invoice_num: 123456,
-    x_currency_code: '',
-    x_amount: 1.00,
-    x_line_item: "Donacion",
-    x_freight: 0.00,
-    x_email: '',
-    cc_number: '',
-    cc_exp: '',
-    cc_cvv2: '',
-    cc_name: '',
-    cc_type: 'visa',
-    x_first_name: '',
-    x_last_name: '',
-    x_company: 'Company',
-    x_address: '',
-    x_city: '',
-    x_state: 'Guatemala',
+    x_api_key: '88888888888',
+    x_amount: 0, // Monto de la donación
+    x_currency_code: 'GTQ', // Moneda
+    x_first_name: '', // Nombre del donante en factura
+    x_last_name: '', // Apellido del donante en factura
+    // Teléfono del donante en factura
+    x_ship_to_address: 'Guatemala', // Dirección del donante de envio
+    x_ship_to_city: 'Guatemala', // Ciudad del donante - Jalar del formulario
+    x_ship_to_country: 'Guatemala', 
+    x_ship_to_state: '0',
+    x_ship_to_zip: '1010',
+    x_ship_to_phone: '11223344', // Teléfono del donante
+    x_description: 'Order number: 123', // Descripción del producto
+    x_reference: '', // Referencia del producto
+    x_url_success: 'https://qpaypro.marlonruiz.dev/api/pago/exitoso',
+    x_url_error: 'https://qpaypro.marlonruiz.dev/api/pago/fallido',
+    x_url_cancel: 'https://qpaypro.marlonruiz.dev/api/pago/cancelado',
+    http_origin: 'qpaypro.marlonruiz.dev',
+    x_company: 'C/F',
+    x_address: '', // Dirección del donante
+    x_city: '', // Ciudad del donante - Jalar del formulario
     x_country: 'Guatemala',
-    x_zip: '01056',
-    x_relay_response: 'none',
-    x_relay_url: 'none',
+    x_state: '0',
+    x_zip: '1201',
+    products: '[["Donativo - Cruz Roja Guatemalteca","100","","1","100","100"]]', // Productos cantidad precio y total son los utimos numeros.
+    x_freight: 0.00,
+    taxes: 0.00,
+    x_email: '', // Email del donante
     x_type: 'AUTH_ONLY',
     x_method: 'CC',
-    http_origin: 'http://local.test.com',
-    visaencuotas: 0,
-    payment_response_url: {
-      success_url: 'https://example.com/success.html',
-      error_url: 'https://example.com/error.html'
-    },
-    origen: 'TESTAPI',
-    finger: ''
+    x_invoice_num: '',
+    custom_fields: '',
+    x_visacuotas: 'no',
+    x_relay_url: 'https://qpaypro.marlonruiz.dev/api/pago/exitoso',
+    origen: 'PLUGIN',
+    store_type: 'hostedpage',
+    x_discount: 0
   };
 
   verificarDatosCompletos(): boolean {
@@ -96,10 +97,7 @@ export class FormularioComponent {
       d.x_email.includes('@') &&
       d.x_amount > 0 &&
       d.x_currency_code !== '' &&
-      d.cc_number.trim() !== '' &&
-      d.cc_exp.trim() !== '' &&
-      d.cc_cvv2.trim() !== '' &&
-      d.cc_name.trim() !== '' &&
+      d.x_phone.trim() !== '' &&
       d.x_address.trim() !== '' &&
       d.x_city.trim() !== ''
     );
@@ -107,7 +105,7 @@ export class FormularioComponent {
 
   submitPayment() {
     this.datosllenos = this.verificarDatosCompletos();
-
+  
     if (!this.datosllenos) {
       Swal.fire({
         icon: 'error',
@@ -117,31 +115,49 @@ export class FormularioComponent {
       });
       return;
     }
+  
+    // ✅ Generar número de factura único
+    this.paymentData.x_invoice_num = `INV-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    this.paymentData.x_reference = `DON-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 
-    this.paymentData.x_line_item = `Donación<|>DON001<|>Donación benéfica<|>1<|>${this.paymentData.x_amount}<|>N`;
-
+  
+    // ✅ Actualizar productos según monto ingresado
+    this.paymentData.products = JSON.stringify([
+      [
+        "Donativo Regalando Sonrisas",
+        this.paymentData.x_amount.toString(),
+        "",
+        "1",
+        this.paymentData.x_amount.toString(),
+        this.paymentData.x_amount.toString()
+      ]
+    ]);
+  
+    // ✅ Formato requerido por QPayPro
+    this.paymentData.x_line_item = `Donación<|>DON001<|>Donación benéfica<|>1<|>${this.paymentData.x_amount}<|>${this.paymentData.x_amount}`;
+  
+    // ✅ Enviar datos a QPayPro (obtener token)
     this.qpayproService.procesarPago(this.paymentData).subscribe({
       next: (respuestaQPayPro) => {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Éxito!',
-          text: 'Pago procesado exitosamente con QPayPro.',
-          confirmButtonText: 'Aceptar'
-        });
-
+        // ✅ Preparar datos para guardar en Laravel
         const donacionData = {
           nombre_completo: `${this.paymentData.x_first_name} ${this.paymentData.x_last_name}`,
           email: this.paymentData.x_email,
+          telefono: this.paymentData.x_phone,
+          direccion: this.paymentData.x_address,
           monto: this.paymentData.x_amount,
           moneda: this.paymentData.x_currency_code,
-          mensaje: 'Donación procesada',
-          estado_pago: 'exitoso',
-          factura: this.paymentData.x_invoice_num.toString(),
-          referencia_transaccion: respuestaQPayPro.idTransaction || 'N/A',
-          metodo: 'tarjeta',
+          mensaje: this.x_mensaje,
+          estado_pago: 'Pendiente',
+          factura: this.paymentData.x_invoice_num, // ✅ Guardamos la misma que mandamos a QPayPro
+          referencia_transaccion: 'Pendiente',
+          metodo: '',
           departamento: this.paymentData.x_city,
+          token: respuestaQPayPro.data.token,
+          referencia: this.paymentData.x_reference,
         };
-
+  
+        // ✅ Guardar la donación en tu backend Laravel
         this.pagosService.procesarPago(donacionData).subscribe({
           next: () => {
             Swal.fire({
@@ -161,16 +177,17 @@ export class FormularioComponent {
             });
           }
         });
-
       },
       error: () => {
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'Ocurrió un error al procesar el pago con QPayPro, por favor verifica los datos de su tarjeta e intente nuevamente.',
+          text: 'No se pudo generar el token de pago.',
           confirmButtonText: 'Aceptar'
         });
       }
     });
   }
+  
+  
 }

@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class QpayproService {
-  private apiUrl = 'https://api-sandboxpayments.qpaypro.com/checkout/api_v1';
+  private apiUrl = 'https://sandboxpayments.qpaypro.com/checkout/register_transaction_store';
 
   constructor(private http: HttpClient) {}
 

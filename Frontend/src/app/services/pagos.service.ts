@@ -3,23 +3,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PagosService {
+  private apiUrl = 'https://qpaypro.marlonruiz.dev/api'; // ✅ Laravel Backend
 
-  // private apiUrl = 'https://pruebasgestordetalentos.com/api';
-  private apiUrl = 'http://localhost:8000/api';
-  
+  //private apiUrl = 'https://marlonruiz.dev/api';
+ // private apiUrl = 'http://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
   procesarPago(paymentData: any): Observable<any> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
 
     return this.http.post(`${this.apiUrl}/pagos`, paymentData, { headers });
-}
+  }
 
   getPagos(): Observable<any> {
     return this.http.get(`${this.apiUrl}/pagos`);
@@ -53,7 +53,21 @@ export class PagosService {
     return this.http.get(`${this.apiUrl}/pagos/fallidas`);
   }
 
-getpagostodosdepartamentos(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/pagos/departamento`);
-}
+  getpagostodosdepartamentos(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pagos/departamento`);
+  }
+
+  actualizarpago($referencia: string, $factura: string, $referencia_transaccion: string): Observable<any> {
+    const body = {
+      referencia: $referencia,
+      factura: $factura,
+      referencia_transaccion: $referencia_transaccion,
+    };
+
+    return this.http.put(`${this.apiUrl}/pagos/actualizar/pendiente`, body);
+  }
+
+  actualizarpagospendientes(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/pagos/estatus/pendiente`);
+  }
 }

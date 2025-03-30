@@ -12,7 +12,7 @@
             <label class="label"><span class="label-text">Monto *</span></label>
             <input type="number" step="0.01"
                    class="input input-bordered w-full"
-                   [(ngModel)]="paymentData.x_amount"
+                   [(ngModel)]="this.paymentData.x_amount"
                    (ngModelChange)="datosllenos = verificarDatosCompletos()"
                    name="x_amount"
                    placeholder="Ej. 100.00"
@@ -54,19 +54,20 @@
                    placeholder="Ej. Pérez"
                    required>
           </div>
+        </div>
 
-          <div class="col-span-full">
-            <label class="label"><span class="label-text">Correo *</span></label>
-            <input type="email"
-                   class="input input-bordered w-full"
-                   [(ngModel)]="paymentData.x_email"
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="label"><span class="label-text">Teléfono *</span></label>
+            <input class="input input-bordered w-full"
+                   [(ngModel)]="paymentData.x_phone"
                    (ngModelChange)="datosllenos = verificarDatosCompletos()"
-                   name="x_email"
-                   placeholder="Ej. juan@correo.com"
+                   name="x_phone"
+                   placeholder="Ej. +502 50517389"
                    required>
           </div>
 
-          <div class="col-span-full">
+          <div>
             <label class="label"><span class="label-text">Dirección *</span></label>
             <input class="input input-bordered w-full"
                    [(ngModel)]="paymentData.x_address"
@@ -75,85 +76,60 @@
                    placeholder="Ej. Calle 123, Ciudad"
                    required>
           </div>
+        </div>
 
+        <div class="col-span-full">
+          <label class="label"><span class="label-text">Departamento *</span></label>
+          <select class="select select-bordered w-full"
+                  [(ngModel)]="paymentData.x_city"
+                  (ngModelChange)="datosllenos = verificarDatosCompletos()"
+                  name="x_department"
+                  required>
+            <option value="" disabled selected>Seleccionar</option>
+            <option value="Alta Verapaz">Alta Verapaz</option>
+            <option value="Baja Verapaz">Baja Verapaz</option>
+            <option value="Chimaltenango">Chimaltenango</option>
+            <option value="Chiquimula">Chiquimula</option>
+            <option value="El Progreso">El Progreso</option>
+            <option value="Escuintla">Escuintla</option>
+            <option value="Guatemala">Guatemala</option>
+            <option value="Huehuetenango">Huehuetenango</option>
+            <option value="Izabal">Izabal</option>
+            <option value="Jalapa">Jalapa</option>
+            <option value="Jutiapa">Jutiapa</option>
+            <option value="Petén">Petén</option>
+            <option value="Quetzaltenango">Quetzaltenango</option>
+            <option value="Quiché">Quiché</option>
+            <option value="Retalhuleu">Retalhuleu</option>
+            <option value="Sacatepéquez">Sacatepéquez</option>
+            <option value="San Marcos">San Marcos</option>
+            <option value="Santa Rosa">Santa Rosa</option>
+            <option value="Sololá">Sololá</option>
+            <option value="Suchitepéquez">Suchitepéquez</option>
+            <option value="Totonicapán">Totonicapán</option>
+            <option value="Zacapa">Zacapa</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="col-span-full">
-            <label class="label"><span class="label-text">Departamento *</span></label>
-            <select class="select select-bordered w-full"
-                    [(ngModel)]="paymentData.x_city"
-                    (ngModelChange)="datosllenos = verificarDatosCompletos()"
-                    name="x_department"
-                    required>
-              <option value="" disabled selected>Seleccionar</option>
-              <option value="Alta Verapaz">Alta Verapaz</option>
-              <option value="Baja Verapaz">Baja Verapaz</option>
-              <option value="Chimaltenango">Chimaltenango</option>
-              <option value="Chiquimula">Chiquimula</option>
-              <option value="El Progreso">El Progreso</option>
-              <option value="Escuintla">Escuintla</option>
-              <option value="Guatemala">Guatemala</option>
-              <option value="Huehuetenango">Huehuetenango</option>
-              <option value="Izabal">Izabal</option>
-              <option value="Jalapa">Jalapa</option>
-              <option value="Jutiapa">Jutiapa</option>
-              <option value="Petén">Petén</option>
-              <option value="Quetzaltenango">Quetzaltenango</option>
-              <option value="Quiché">Quiché</option>
-              <option value="Retalhuleu">Retalhuleu</option>
-              <option value="Sacatepéquez">Sacatepéquez</option>
-              <option value="San Marcos">San Marcos</option>
-              <option value="Santa Rosa">Santa Rosa</option>
-              <option value="Sololá">Sololá</option>
-              <option value="Suchitepéquez">Suchitepéquez</option>
-              <option value="Totonicapán">Totonicapán</option>
-              <option value="Zacapa">Zacapa</option>
-            </select>
+            <label class="label"><span class="label-text">Correo Electrónico *</span></label>
+            <input type="email"
+                   class="input input-bordered w-full"
+                   [(ngModel)]="paymentData.x_email"
+                   (ngModelChange)="datosllenos = verificarDatosCompletos()"
+                   name="x_email"
+                   placeholder="Ej. correo@ejemplo.com"
+                   required>
           </div>
         </div>
 
-        <!-- Información de tarjeta -->
-        <div class="divider">Información de Tarjeta</div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="label"><span class="label-text">Nombre en tarjeta *</span></label>
-            <input class="input input-bordered w-full"
-                   [(ngModel)]="paymentData.cc_name"
-                   (ngModelChange)="datosllenos = verificarDatosCompletos()"
-                   name="cc_name"
-                   placeholder="Como aparece en la tarjeta"
-                   required>
-          </div>
-
-          <div>
-            <label class="label"><span class="label-text">Número de tarjeta *</span></label>
-            <input class="input input-bordered w-full"
-                   [(ngModel)]="paymentData.cc_number"
-                   (ngModelChange)="datosllenos = verificarDatosCompletos()"
-                   name="cc_number"
-                   placeholder="0000 0000 0000 0000"
-                   required>
-          </div>
-
-          <div>
-            <label class="label"><span class="label-text">Expiración (MM/AA) *</span></label>
-            <input class="input input-bordered w-full"
-                   [(ngModel)]="paymentData.cc_exp"
-                   (ngModelChange)="datosllenos = verificarDatosCompletos()"
-                   name="cc_exp"
-                   placeholder="MM/AA"
-                   required>
-          </div>
-
-          <div>
-            <label class="label"><span class="label-text">CVV *</span></label>
-            <input type="password"
-                   class="input input-bordered w-full"
-                   [(ngModel)]="paymentData.cc_cvv2"
-                   (ngModelChange)="datosllenos = verificarDatosCompletos()"
-                   name="cc_cvv2"
-                   placeholder="123"
-                   required>
-          </div>
+        <div class="col-span-full">
+          <label class="label"><span class="label-text">Mensaje</span></label>
+          <textarea class="textarea textarea-bordered w-full"
+                    [(ngModel)]="x_mensaje"
+                    (ngModelChange)="datosllenos = verificarDatosCompletos()"
+                    name="x_mensaje"
+                    placeholder="Escribe un mensaje opcional"></textarea>
         </div>
 
         <!-- Botón -->
