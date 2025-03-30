@@ -1,72 +1,137 @@
-# 🌟 Fundación Solidaria Regalando Sonrisas
+# 🌟 Fundación Regalando Sonrisas
 
-Bienvenido al sistema de donaciones de la Fundación Solidaria Regalando Sonrisas. Este proyecto permite realizar donaciones en línea mediante integración con **QPayPro Checkout Page**, ofreciendo un proceso seguro y automatizado de principio a fin.
-
----
-
-## 🧾 Flujo de Donación y Procesamiento con QPayPro
-
-### 💡 Descripción
-
-Este sistema permite a los donantes realizar contribuciones a la **Fundación Solidaria Regalando Sonrisas** a través de un flujo completamente integrado con **QPayPro Checkout Page**.
+Sistema web para gestión de donaciones para la Fundación Solidaria **Regalando Sonrisas**, donde los usuarios pueden apoyar causas sociales a través de una experiencia intuitiva, transparente y segura.
 
 ---
 
-### 🖼️ Interfaz amigable para el usuario
+## 📌 Características principales
 
-1. **Landing page** clara y simple con botón “Dona ahora”.
-2. Al hacer clic, se muestra un formulario donde el usuario completa su información.
-3. Una vez enviado el formulario:
-   - Se genera un **token de pago** con QPayPro.
-   - Se guarda la donación como **"pendiente"** en la base de datos MySQL.
-   - El donante recibe un **correo con un enlace para completar el pago**.
-
----
-
-### 💳 Procesamiento de Pago con QPayPro
-
-- El donante es redirigido a la **Checkout Page de QPayPro**.
-- Puede simular el pago usando los datos de prueba:
-  ```
-  Número de tarjeta: 4111 1111 1111 1111
-  Fecha: cualquier fecha futura
-  CVV: 123
-  ```
+- Página pública con llamada a la acción para donar.
+- Formulario de donación (nombre, monto, moneda, departamento, email...).
+- Integración con plataforma de pagos **QPayPro (Checkout Page)**.
+- Confirmación de pago vía correo electrónico.
+- Actualización automática del estado de la transacción.
+- Panel administrativo con dashboard de donaciones.
+- Autenticación por usuario y contraseña (solo backend/API con Laravel).
+- Frontend moderno hecho con **Angular 19**.
 
 ---
 
-### ✅ Confirmación Automática
+## 📸 Capturas del sistema
 
-- Una vez realizado el pago, QPayPro redirige al backend con los datos de la transacción.
-- El sistema actualiza automáticamente en la base de datos:
-  - `estado_pago` → exitoso
-  - `factura` → número de factura de QPayPro
-  - `referencia_transaccion` → ID de la transacción de QPayPro
-- El donante recibe un **correo electrónico de confirmación** con los detalles del pago exitoso.
+### 🏠 Vista principal
 
----
+![Principal](./screenshots/principal.PNG)
 
-## 🛠️ Stack Tecnológico
-
-- **Frontend**: Angular 19
-- **Backend**: Laravel 11 (API RESTful)
-- **Base de Datos**: MySQL
-- **Pasarela de Pago**: QPayPro
-- **Correo**: Notificaciones de confirmación con Laravel Mail
+Pantalla de bienvenida donde se muestra el logotipo y un botón claro para iniciar el proceso de donación.
 
 ---
 
-## 📬 Ejemplo de Correo Exitoso
+### 📝 Formulario de donación
 
-![Correo exitoso](./capturas/correo_exitoso.PNG)
+![Formulario](./screenshots/formulario.PNG)
 
----
-
-## 📷 Screenshots
-
-| Vista Principal             | Formulario de Donación     | Checkout Page         |
-|----------------------------|----------------------------|------------------------|
-| ![](./capturas/gracias.PNG)   | ![](./capturas/form.png)   | ![](./capturas/pago.png) |
+Formulario que recopila los datos necesarios antes de generar el pago en QPayPro. Todos los campos requeridos se validan antes de continuar.
 
 ---
 
+### ✅ Formulario enviado con éxito
+
+![Formulario Enviado](./screenshots/Formulario_enviado.PNG)
+
+Una vez enviado, se muestra un mensaje amigable al usuario y se le indica que revise su correo para continuar con el pago.
+
+---
+
+### 📩 Correo de confirmación de donación (link de pago)
+
+![Correo Confirmar Pago](./screenshots/correo_confirmar_pago.PNG)
+
+El donante recibe un correo con el enlace directo al **Checkout de QPayPro** para finalizar el pago.
+
+---
+
+### 💳 Proceso de pago
+
+El enlace recibido lleva al formulario de pago de QPayPro, donde el usuario puede pagar con tarjeta de crédito u otros métodos habilitados.
+
+---
+
+### 🎉 Vista de agradecimiento
+
+![Gracias](./screenshots/gracias.PNG)
+
+Luego de realizar la donación, el usuario es redirigido a una vista de agradecimiento personalizada.
+
+---
+
+### 📬 Correo de confirmación de transacción exitosa
+
+![Correo Exitoso](./screenshots/correo_exitoso.PNG)
+
+El sistema envía un segundo correo confirmando que la transacción fue procesada con éxito, junto con los detalles del pago (ID, monto y fecha).
+
+---
+
+### 🔒 Login administrativo
+
+![Login](./screenshots/login.PNG)
+
+Login protegido con credenciales simples (usuario y contraseña). Autenticación vía API para acceder al dashboard de administración.
+
+---
+
+### 📊 Dashboard de donaciones
+
+![Dashboard](./screenshots/dashboard.PNG)
+
+Panel de administración donde se visualizan:
+
+- Totales por moneda
+- Donaciones exitosas, pendientes y fallidas
+- Donaciones por departamento (gráfico de barras)
+- Estado de pagos (gráfico circular)
+- Tabla con detalle de cada transacción
+
+---
+
+## 🔐 Flujo técnico
+
+1. El usuario entra en la página principal y hace clic en **Dona Ahora**.
+2. Llena el formulario y se guarda el registro en la base de datos como "pendiente".
+3. Se le envía un correo con el link al **Checkout de QPayPro**.
+4. Al completar el pago, QPayPro redirige a nuestra API (Laravel).
+5. Se actualiza la base de datos con los datos reales del pago (`id_transacción`, `factura`, etc).
+6. Se envía un correo final de confirmación.
+7. El admin puede consultar todo desde el dashboard privado.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- **Frontend**: Angular 19 + Tailwind CSS
+- **Backend/API**: Laravel 11
+- **Base de datos**: MySQL
+- **Pasarela de pagos**: QPayPro (Checkout Page)
+- **Email**: Laravel Mail con plantillas Blade
+
+---
+
+## 📦 Instalación y despliegue
+
+```bash
+# Clonar el proyecto SSH
+git clone git@github.com:MarlonRuiz96/FundacionRegalandoSonrisas.git
+
+# Backend
+cd Backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+
+# Frontend
+cd ../Frontend
+npm install
+ng serve
