@@ -21,7 +21,7 @@ Sistema web para gestión de donaciones para la Fundación Solidaria **Regalando
 
 ### 🏠 Vista principal
 
-![Principal](./screenshots/principal.PNG)
+![Principal](./capturas/principal.PNG)
 
 Pantalla de bienvenida donde se muestra el logotipo y un botón claro para iniciar el proceso de donación.
 
@@ -29,7 +29,7 @@ Pantalla de bienvenida donde se muestra el logotipo y un botón claro para inici
 
 ### 📝 Formulario de donación
 
-![Formulario](./screenshots/formulario.PNG)
+![Formulario](./capturas/formulario.PNG)
 
 Formulario que recopila los datos necesarios antes de generar el pago en QPayPro. Todos los campos requeridos se validan antes de continuar.
 
@@ -45,7 +45,7 @@ Una vez enviado, se muestra un mensaje amigable al usuario y se le indica que re
 
 ### 📩 Correo de confirmación de donación (link de pago)
 
-![Correo Confirmar Pago](./screenshots/correo_confirmar_pago.PNG)
+![Correo Confirmar Pago](./capturas/correo_confirmar_pago.PNG)
 
 El donante recibe un correo con el enlace directo al **Checkout de QPayPro** para finalizar el pago.
 
@@ -59,7 +59,7 @@ El enlace recibido lleva al formulario de pago de QPayPro, donde el usuario pued
 
 ### 🎉 Vista de agradecimiento
 
-![Gracias](./screenshots/gracias.PNG)
+![Gracias](./capturas/gracias.PNG)
 
 Luego de realizar la donación, el usuario es redirigido a una vista de agradecimiento personalizada.
 
@@ -67,7 +67,7 @@ Luego de realizar la donación, el usuario es redirigido a una vista de agradeci
 
 ### 📬 Correo de confirmación de transacción exitosa
 
-![Correo Exitoso](./screenshots/correo_exitoso.PNG)
+![Correo Exitoso](./capturas/correo_exitoso.PNG)
 
 El sistema envía un segundo correo confirmando que la transacción fue procesada con éxito, junto con los detalles del pago (ID, monto y fecha).
 
@@ -75,7 +75,7 @@ El sistema envía un segundo correo confirmando que la transacción fue procesad
 
 ### 🔒 Login administrativo
 
-![Login](./screenshots/login.PNG)
+![Login](./capturas/login.PNG)
 
 Login protegido con credenciales simples (usuario y contraseña). Autenticación vía API para acceder al dashboard de administración.
 
@@ -83,7 +83,7 @@ Login protegido con credenciales simples (usuario y contraseña). Autenticación
 
 ### 📊 Dashboard de donaciones
 
-![Dashboard](./screenshots/dashboard.PNG)
+![Dashboard](./capturas/dashboard.PNG)
 
 Panel de administración donde se visualizan:
 
