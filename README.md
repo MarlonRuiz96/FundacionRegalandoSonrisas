@@ -6,152 +6,112 @@ Sistema web para gestión de donaciones para la Fundación Solidaria **Regalando
 
 ## 📌 Características principales
 
-- Página pública con llamada a la acción para donar.
-- Formulario de donación (nombre, monto, moneda, departamento, email...).
-- Integración con plataforma de pagos **QPayPro (Checkout Page)**.
-- Confirmación de pago vía correo electrónico.
-- Actualización automática del estado de la transacción.
-- Panel administrativo con dashboard de donaciones.
-- Autenticación por usuario y contraseña (solo backend/API con Laravel).
-- Frontend moderno hecho con **Angular 19**.
+- Página pública con botón de acción para donar.
+- Formulario de donación con validaciones (nombre, monto, email, etc.).
+- Generación de token para pago mediante **QPayPro (Checkout Page)**.
+- Envío de correo con enlace de pago.
+- Registro inicial como "pendiente", actualización automática al finalizar el pago.
+- Envío de correo de confirmación de transacción exitosa.
+- Dashboard administrativo para visualizar donaciones.
+- Login protegido por autenticación básica.
+- **Frontend**: Angular 19 | **Backend**: Laravel 11 | **DB**: MySQL
 
 ---
 
-## 📸 Capturas del sistema
+## 🖼️ Capturas del sistema
 
 ### 🏠 Vista principal
 
-![Principal](./capturas/principal.PNG)
-
+![Principal](./capturas/principal.PNG)  
 Pantalla de bienvenida donde se muestra el logotipo y un botón claro para iniciar el proceso de donación.
 
 ---
 
 ### 📝 Formulario de donación
 
-![Formulario](./capturas/formulario.PNG)
-
-Formulario que recopila los datos necesarios antes de generar el pago en QPayPro. Todos los campos requeridos se validan antes de continuar.
-
----
-
-### ✅ Formulario enviado con éxito
-
-![Formulario Enviado](./capturas/Formulario_enviado.PNG)
-
-Una vez enviado, se muestra un mensaje amigable al usuario y se le indica que revise su correo para continuar con el pago.
+![Formulario](./capturas/formulario.PNG)  
+Formulario para capturar los datos del donante. Al enviar, se registra la donación como **pendiente**.
 
 ---
 
-### 📩 Correo de confirmación de donación (link de pago)
+### ✅ Confirmación de registro
 
-![Correo Confirmar Pago](./capturas/correo_confirmar_pago.PNG)
-
-El donante recibe un correo con el enlace directo al **Checkout de QPayPro** para finalizar el pago.
-
----
-
-### 💳 Proceso de pago
-
-El enlace recibido lleva al formulario de pago de QPayPro, donde el usuario puede pagar con tarjeta de crédito u otros métodos habilitados.
+![Formulario Enviado](./capturas/Formulario_enviado.PNG)  
+Se notifica al usuario que su donación fue registrada y que debe revisar su correo.
 
 ---
 
-### 🎉 Vista de agradecimiento
+### 📩 Correo con enlace de pago
 
-![Gracias](./capturas/gracias.PNG)
+![Correo Confirmar Pago](./capturas/correo_confirmar_pago.PNG)  
+Correo automático con un botón que redirige a la **Checkout Page** de QPayPro para completar el pago.
 
-Luego de realizar la donación, el usuario es redirigido a una vista de agradecimiento personalizada.
+---
+
+### 💳 Formulario de pago en QPayPro
+
+> Aquí se realiza el pago simulado usando tarjeta de prueba. El proceso es seguro y simulado (sin cobros reales).
+
+---
+
+### 🙌 Vista de agradecimiento
+
+![Gracias](./capturas/gracias.PNG)  
+Luego de completar el pago, el sistema redirige al usuario a una pantalla de agradecimiento.
 
 ---
 
 ### 📬 Correo de confirmación de transacción exitosa
 
-![Correo Exitoso](./capturas/correo_exitoso.PNG)
-
-El sistema envía un segundo correo confirmando que la transacción fue procesada con éxito, junto con los detalles del pago (ID, monto y fecha).
+![Correo Exitoso](./capturas/correo_exitoso.PNG)  
+Correo con detalles del pago (ID de transacción, monto y fecha), confirmando la donación exitosa.
 
 ---
 
-### 🔒 Login administrativo
+### 🔐 Login administrativo
 
-![Login](./capturas/login.PNG)
-
-Login protegido con credenciales simples (usuario y contraseña). Autenticación vía API para acceder al dashboard de administración.
+![Login](./capturas/login.PNG)  
+Acceso para el panel de administración, solo usuarios autenticados pueden acceder al dashboard.
 
 ---
 
 ### 📊 Dashboard de donaciones
 
-![Dashboard](./capturas/dashboard.PNG)
+![Dashboard](./capturas/dashboard.PNG)  
+Panel visual e interactivo que muestra:
 
-Panel de administración donde se visualizan:
-
-- Totales por moneda
+- Totales en GTQ/USD
 - Donaciones exitosas, pendientes y fallidas
-- Donaciones por departamento (gráfico de barras)
-- Estado de pagos (gráfico circular)
-- Tabla con detalle de cada transacción
+- Gráfico de barras por departamento
+- Gráfico circular de estados de pagos
+- Tabla con el detalle de cada donación
 
 ---
 
-## 🔐 Flujo técnico
+## 🔄 Flujo de donación
 
-1. El usuario entra en la página principal y hace clic en **Dona Ahora**.
-2. Llena el formulario y se guarda el registro en la base de datos como "pendiente".
-3. Se le envía un correo con el link al **Checkout de QPayPro**.
-4. Al completar el pago, QPayPro redirige a nuestra API (Laravel).
-5. Se actualiza la base de datos con los datos reales del pago (`id_transacción`, `factura`, etc).
-6. Se envía un correo final de confirmación.
-7. El admin puede consultar todo desde el dashboard privado.
-
----
-
-## 🛠️ Tecnologías utilizadas
-
-- **Frontend**: Angular 19 + Tailwind CSS
-- **Backend/API**: Laravel 11
-- **Base de datos**: MySQL
-- **Pasarela de pagos**: QPayPro (Checkout Page)
-- **Email**: Laravel Mail con plantillas Blade
+1. El usuario accede a [qpaypro.marlonruiz.dev](https://qpaypro.marlonruiz.dev)
+2. Hace clic en **DONA AHORA**.
+3. Llena el formulario → se guarda la donación en la base de datos con estado "pendiente".
+4. Recibe un correo con enlace para pagar vía QPayPro.
+5. Realiza el pago en QPayPro.
+6. Nuestra API actualiza el estado a **exitoso**.
+7. Recibe correo de confirmación.
+8. Los administradores visualizan la transacción en el dashboard.
 
 ---
-
-## 📦 Instalación y despliegue
-
-```bash
-# Clonar el proyecto SSH
-git clone git@github.com:MarlonRuiz96/FundacionRegalandoSonrisas.git
-
-# Backend
-cd Backend
-composer install
-cp .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan serve
-
-# Frontend
-cd ../Frontend
-npm install
-ng serve
-
 
 ## 🧪 Prueba la Demo
 
-Puedes probar el sistema completo de principio a fin con los siguientes pasos:
-
-### 🌐 Sitio de prueba
+### 🌐 Acceso
 
 👉 [https://qpaypro.marlonruiz.dev](https://qpaypro.marlonruiz.dev)
 
-Haz clic en el botón **DONA AHORA**, completa el formulario y revisa tu correo electrónico.
+Haz clic en **DONA AHORA**, llena los datos, y revisa tu correo para simular una transacción real.
 
 ---
 
-### 💳 Datos para pruebas (QPayPro)
-
-En el paso de **pago con tarjeta**, utiliza los siguientes datos de prueba:
+### 💳 Datos de tarjeta de prueba
 
 | Campo                 | Valor                |
 |-----------------------|----------------------|
@@ -160,15 +120,19 @@ En el paso de **pago con tarjeta**, utiliza los siguientes datos de prueba:
 | **CVV**               | `123`                |
 | **Teléfono**          | `+50250417389`       |
 
-✅ Al completar el proceso, el sistema:
-
-- Guarda la donación en estado **pendiente**
-- Envía un **correo con un enlace de pago**
-- Redirecciona a la **Checkout Page de QPayPro**
-- Procesa el pago y actualiza el estado a **exitoso**
-- Envía un **correo de confirmación** con los detalles de la transacción
+✅ Este flujo simula una donación completa sin hacer cobros reales.
 
 ---
 
-> 💡 Este flujo permite simular una donación real de extremo a extremo utilizando datos de prueba, sin hacer cargos reales.
+## 🚀 Instalación local
 
+### Backend (Laravel 11)
+
+```bash
+git clone git@github.com:MarlonRuiz96/FundacionRegalandoSonrisas.git
+cd FundacionRegalandoSonrisas/Backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
