@@ -37,7 +37,7 @@ Formulario que recopila los datos necesarios antes de generar el pago en QPayPro
 
 ### ✅ Formulario enviado con éxito
 
-![Formulario Enviado](./screenshots/Formulario_enviado.PNG)
+![Formulario Enviado](./capturas/Formulario_enviado.PNG)
 
 Una vez enviado, se muestra un mensaje amigable al usuario y se le indica que revise su correo para continuar con el pago.
 
