@@ -42,9 +42,6 @@ export class DashboardComponent {
   departamentos: string[] = [];
   totalDonaciones: number[] = [];
 
-  pago: string = '435175'; // ID de transacción para verificar
-
-  arrayporactualizar: any[] = [];
 
   // Chart configs
   barChartOptions = {
@@ -102,46 +99,12 @@ export class DashboardComponent {
   searchText = '';
   selectedStatus = 'todos';
   selectedDepartment = 'todos';
+  
 
   ngOnInit() {
 
-    //Verificamos pagos por actualizar
-    this.pagosService.actualizarpagospendientes().subscribe((data: any) => {
-      this.arrayporactualizar = data;
-      console.log('Pagos por actualizar:', this.arrayporactualizar);
-    });
+ 
 
-
-    // Verificamos un pago específico (puedes hacer que esto se automatice o venga por parámetro)
-    this.verificarPagoService.verificarPago(this.pago).subscribe({
-      next: (response) => {
-        const detalle = response.response[0];
-
-        console.log('🧾 Detalles de la transacción:', detalle);
-        console.log('🔗 x_reference:', detalle.petition?.x_reference);
-        console.log('🧾 x_invoice_num:', detalle.petition?.x_invoice_num);
-        console.log('🔑 x_transaction_id:', detalle.idTransaction);
-
-        this.pagosService
-          .actualizarpago(
-            detalle.petition?.x_reference,
-            detalle.petition?.x_invoice_num,
-            detalle.idTransaction
-          )
-          .subscribe({
-            next: (res) => {
-              console.log('✅ Pago actualizado correctamente:', res);
-              // Swal.fire('¡Actualizado!', 'El pago fue actualizado correctamente.', 'success');
-            },
-            error: (err) => {
-              console.error('❌ Error al actualizar el pago:', err);
-            },
-          });
-      },
-      error: (error) => {
-        console.error('❌ Error al verificar el pago:', error);
-      },
-    });
 
     // Estadísticas generales
     this.pagosService.getPagosGTQ().subscribe((data: number) => {

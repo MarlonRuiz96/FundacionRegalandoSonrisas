@@ -12,6 +12,6 @@ export class FlotanteComponent {
   constructor(private router: Router) {}
 
   irAlDashboard() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/ingreso']);
   }
 }

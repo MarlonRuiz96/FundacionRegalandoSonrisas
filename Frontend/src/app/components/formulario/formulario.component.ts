@@ -163,7 +163,7 @@ export class FormularioComponent {
             Swal.fire({
               icon: 'success',
               title: '¡Éxito!',
-              text: 'Donación guardada exitosamente.',
+              text: 'Donación guardada exitosamente, por favor revisa tu correo para continuar con el proceso.',
               confirmButtonText: 'Aceptar'
             });
             this.dialogRef.close({ success: true, mensaje: 'Donación completada' });

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 
 
 use App\Mail\ConfirmacionDonacion;
+use App\Mail\DonacionExitosa;
 
 
 
@@ -130,6 +131,8 @@ class PagosController extends Controller
                 'estado_pago' => "Exitoso",
                 'metodo' => "Tarjeta de Crédito",
             ]);
+
+
     
             // Si querés, actualizá también 'estado_pago' => 'exitoso' 
             // o lo que corresponda
@@ -148,8 +151,10 @@ class PagosController extends Controller
             'hash' => $hash,
             'datos_completos' => json_encode($request->query()),
         ]);
+        Mail::to($donacion->email)->send(new DonacionExitosa($donacion));
+
     
-        return response()->json($donacion);
+        return redirect()->away('https://qpaypro.marlonruiz.dev/gracias');
     }
     
     private function getDonacionModelByReferencia($referencia)
