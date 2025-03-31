@@ -69,6 +69,64 @@ Visualiza métricas, gráficas y estado de cada donación en tiempo real.
 
 ---
 
+
+### 🗃️ Estructura de la Base de Datos
+
+El sistema utiliza tres tablas principales:
+
+---
+
+#### 📄 `donaciones`
+
+| Campo                  | Tipo         | Descripción                                     |
+|------------------------|--------------|-------------------------------------------------|
+| `id`                   | BIGINT       | Identificador único                             |
+| `nombre_completo`      | STRING       | Nombre completo del donante                     |
+| `email`                | STRING       | Correo electrónico del donante                  |
+| `monto`                | DECIMAL(10,2)| Monto donado                                    |
+| `moneda`               | STRING(5)    | Moneda (`GTQ`, `USD`)                           |
+| `mensaje`              | TEXT         | Mensaje opcional del donante                    |
+| `estado_pago`          | STRING       | `pendiente`, `exitoso`, `fallido`              |
+| `factura`              | STRING       | ID de la factura (`x_invoice_num`)             |
+| `referencia_transaccion` | STRING     | ID de la transacción en QPayPro                 |
+| `metodo`               | STRING       | Método de pago (`CC`, etc.)                     |
+| `departamento`         | STRING       | Departamento seleccionado                       |
+| `created_at` / `updated_at` | TIMESTAMP | Timestamps automáticos                       |
+
+---
+
+#### 💳 `transacciones`
+
+| Campo                  | Tipo         | Descripción                                     |
+|------------------------|--------------|-------------------------------------------------|
+| `id`                   | BIGINT       | Identificador único                             |
+| `estado`               | STRING       | `exitoso`, `fallido`, etc.                      |
+| `codigo_respuesta`     | STRING       | Código devuelto por QPayPro                     |
+| `mensaje_respuesta`    | STRING       | Mensaje devuelto por QPayPro                    |
+| `referencia_transaccion` | STRING     | ID de la transacción                            |
+| `factura`              | STRING       | Número de factura                               |
+| `monto`                | DECIMAL(10,2)| Monto pagado                                    |
+| `moneda`               | STRING       | Moneda utilizada                                |
+| `hash`                 | STRING       | Hash de verificación (`x_MD5_Hash`)             |
+| `datos_completos`      | JSON         | Payload completo recibido (para auditoría)      |
+| `created_at` / `updated_at` | TIMESTAMP | Timestamps automáticos                       |
+
+---
+
+#### 👤 `usuarios`
+
+| Campo       | Tipo     | Descripción                          |
+|-------------|----------|--------------------------------------|
+| `id`        | BIGINT   | Identificador único                  |
+| `usuario`   | STRING   | Nombre de usuario                    |
+| `password`  | STRING   | Contraseña encriptada (bcrypt)       |
+| `created_at` / `updated_at` | TIMESTAMP | Timestamps automáticos  |
+
+---
+
+✅ Esta estructura permite registrar la intención de donar, capturar el resultado del pago y proteger el acceso administrativo al sistema.
+
+
 ## 🔄 Flujo resumido
 
 1. Usuario accede a la web y hace clic en **DONA AHORA**.
